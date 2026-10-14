@@ -38,6 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body>
+        <AsciiIntro />
         <Navbar />
         <AsciiIntro />
         <main>{children}</main>
