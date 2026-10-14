@@ -4,6 +4,14 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { siteMeta } from "@/lib/content";
+import AsciiIntro from "@/components/ui/AsciiIntro";
+// ...
+<body>
+  <AsciiIntro />
+  <Navbar />
+  {children}
+  <Footer />
+</body>
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -30,6 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body>
+        <AsciiIntro />
         <Navbar />
         <main>{children}</main>
         <Footer />
