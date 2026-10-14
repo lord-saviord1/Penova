@@ -46,6 +46,15 @@ const config: Config = {
         "canopy-fade":
           "linear-gradient(180deg, #0C3559 0%, #155E9A 55%, #2876AE 100%)",
       },
+      // Depth layers, tinted with the brand ink colour rather than pure black.
+      boxShadow: {
+        "layer-1":
+          "0 1px 2px rgba(20,40,61,.06), 0 2px 6px rgba(20,40,61,.06)",
+        "layer-2":
+          "0 2px 4px rgba(20,40,61,.06), 0 8px 16px rgba(20,40,61,.08), 0 16px 32px rgba(20,40,61,.06)",
+        "layer-3":
+          "0 4px 8px rgba(20,40,61,.08), 0 16px 32px rgba(20,40,61,.12), 0 32px 64px rgba(20,40,61,.12)",
+      },
     },
   },
   plugins: [],
