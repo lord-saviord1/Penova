@@ -13,7 +13,7 @@ export default function HomePage() {
     <>
       <Hero />
 
-      <section className="py-20 md:py-28">
+      <section className="sheet bg-paper py-20 md:py-28">
         <Container>
           <SectionHeading eyebrow={bigIdea.eyebrow} title={bigIdea.headline} />
           <div className="mt-8 grid gap-10 md:grid-cols-2">

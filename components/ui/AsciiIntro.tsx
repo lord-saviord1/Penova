@@ -10,7 +10,9 @@ import { useEffect, useRef, useState } from "react";
  * the cursor pushes cells away, and a gravity phase drops them at the end.
  * Differences from the original:
  *  - the source is the word "PENOVA" drawn on an offscreen canvas (no image)
- *  - it runs by itself: assemble -> hold -> fall -> fade out (~2s)
+ *  - letters assemble slowly, then wait: the visitor moves across them
+ *    (cursor or finger), "enter" unlocks, and a click/tap drops the letters
+ *    and fades the intro out. Skip and Escape always work.
  *  - it works on phones with a smaller grid instead of switching off
  *  - it plays once per browser session and is skipped for reduced motion
  */
@@ -29,12 +31,18 @@ const HOVER_PUSH = 7;
 const EASE = 0.1;
 const GRAVITY = 0.05;
 const BOUNCE = 0.25;
-const STAGGER_FRAMES = 18;
+const STAGGER_FRAMES = 18; // used when the letters fall
+const ENTRY_STAGGER = 50; // used when the letters first arrive
+const ENTRY_EASE = 0.06; // slower than hover easing, so the arrival feels longer
 const ENTRY_SPREAD = 40; // how far (in cells) letters start from home
 
-const ASSEMBLE_MS = 750;
-const HOLD_MS = 550;
+const ASSEMBLE_MS = 1800;
 const EXIT_MS = 800;
+// How far the pointer (or finger) must travel across the letters before
+// "enter" unlocks.
+const UNLOCK_DISTANCE = 320;
+
+type Stage = "assembling" | "explore" | "ready";
 
 type Cell = {
   col: number;
@@ -52,9 +60,12 @@ const randomChar = () => CHARS[Math.floor(Math.random() * CHARS.length)];
 
 export default function AsciiIntro() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
   const skipRef = useRef<() => void>(() => {});
   const [visible, setVisible] = useState(true);
   const [leaving, setLeaving] = useState(false);
+  const [stage, setStage] = useState<Stage>("assembling");
+  const [touch, setTouch] = useState(false);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia(
@@ -80,6 +91,10 @@ export default function AsciiIntro() {
       return;
     }
 
+    // Tells the CSS failsafe that JavaScript is running, so it must not hide us.
+    overlayRef.current?.setAttribute("data-js", "1");
+    setTouch(window.matchMedia("(pointer: coarse)").matches);
+
     const root = document.documentElement;
     const previousOverflow = root.style.overflow;
     root.style.overflow = "hidden";
@@ -95,6 +110,15 @@ export default function AsciiIntro() {
     let phase: Phase = "assemble";
     let phaseStart = performance.now();
     const cursor = { col: -999, row: -999 };
+
+    let stageNow: Stage = "assembling";
+    const changeStage = (next: Stage) => {
+      stageNow = next;
+      setStage(next);
+    };
+    let lastX = -1;
+    let lastY = -1;
+    let travelled = 0;
 
     const family =
       getComputedStyle(document.body).getPropertyValue("--font-display").trim();
@@ -158,7 +182,7 @@ export default function AsciiIntro() {
           offsetX: scatter ? (Math.random() - 0.5) * ENTRY_SPREAD * 2 : 0,
           offsetY: scatter ? (Math.random() - 0.5) * ENTRY_SPREAD : 0,
           fallSpeed: 0,
-          wait: scatter ? Math.floor(Math.random() * STAGGER_FRAMES) : 0,
+          wait: scatter ? Math.floor(Math.random() * ENTRY_STAGGER) : 0,
         });
       }
     };
@@ -169,6 +193,8 @@ export default function AsciiIntro() {
       } catch {
         /* ignore */
       }
+      // The effect cleanup only runs on unmount, so release the scroll lock here.
+      root.style.overflow = previousOverflow;
       setVisible(false);
     };
 
@@ -187,10 +213,12 @@ export default function AsciiIntro() {
     const update = (now: number) => {
       const elapsed = now - phaseStart;
       if (phase === "assemble" && elapsed > ASSEMBLE_MS) {
+        // Wordmark is formed. Stay here until the visitor plays with it and
+        // then clicks; nothing auto-exits.
         phase = "hold";
         phaseStart = now;
-      } else if (phase === "hold" && elapsed > HOLD_MS) {
-        startFall(now);
+        lastX = -1;
+        changeStage("explore");
       }
 
       for (const cell of cells) {
@@ -221,8 +249,9 @@ export default function AsciiIntro() {
           targetX = (dx / distance) * push;
           targetY = (dy / distance) * push;
         }
-        cell.offsetX += (targetX - cell.offsetX) * EASE;
-        cell.offsetY += (targetY - cell.offsetY) * EASE;
+        const ease = phase === "assemble" ? ENTRY_EASE : EASE;
+        cell.offsetX += (targetX - cell.offsetX) * ease;
+        cell.offsetY += (targetY - cell.offsetY) * ease;
       }
     };
 
@@ -259,10 +288,28 @@ export default function AsciiIntro() {
     const onPointerMove = (event: PointerEvent) => {
       cursor.col = event.clientX / step;
       cursor.row = event.clientY / step;
+
+      // Once the wordmark has formed, count how far the visitor moves across it.
+      if (stageNow === "explore") {
+        if (lastX >= 0) {
+          travelled += Math.hypot(event.clientX - lastX, event.clientY - lastY);
+          if (travelled > UNLOCK_DISTANCE) changeStage("ready");
+        }
+        lastX = event.clientX;
+        lastY = event.clientY;
+      }
     };
     const onPointerLeave = () => {
       cursor.col = -999;
       cursor.row = -999;
+    };
+    const onPointerUp = (event: PointerEvent) => {
+      // A lifted finger shouldn't leave a push-away hole in the letters.
+      if (event.pointerType !== "mouse") onPointerLeave();
+      lastX = -1;
+    };
+    const onClick = () => {
+      if (stageNow === "ready") startFall(performance.now());
     };
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") startFall(performance.now());
@@ -273,6 +320,9 @@ export default function AsciiIntro() {
 
     window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("pointerleave", onPointerLeave);
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerUp);
+    window.addEventListener("click", onClick);
     window.addEventListener("keydown", onKey);
     window.addEventListener("resize", onResize);
 
@@ -295,6 +345,9 @@ export default function AsciiIntro() {
       window.clearTimeout(exitTimer);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerleave", onPointerLeave);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
+      window.removeEventListener("click", onClick);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("resize", onResize);
       root.style.overflow = previousOverflow;
@@ -305,20 +358,45 @@ export default function AsciiIntro() {
 
   return (
     <div
+      ref={overlayRef}
       role="status"
-      aria-label="Loading PENOVA"
+      aria-label="PENOVA intro"
+      style={{ touchAction: "none" }}
       className={`ascii-intro fixed inset-0 z-[100] bg-canopy-900 transition-opacity duration-500 ease-out ${
         leaving ? "pointer-events-none opacity-0 delay-200" : "opacity-100"
       }`}
     >
       <canvas ref={canvasRef} aria-hidden="true" className="block h-full w-full" />
+
+      {/* Skip is always available, so nobody is ever trapped behind the intro. */}
       <button
         type="button"
         onClick={() => skipRef.current()}
-        className="absolute bottom-6 right-6 rounded px-3 py-2 font-display text-sm text-canopy-200 transition-colors hover:text-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold"
+        className="absolute right-6 top-6 rounded px-3 py-2 font-display text-sm text-canopy-200 transition-colors hover:text-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold"
       >
         Skip intro
       </button>
+
+      {!leaving && (
+        <div className="pointer-events-none absolute inset-x-0 bottom-12 flex justify-center px-6">
+          {stage === "explore" && (
+            <p className="animate-pulse font-display text-sm text-canopy-200">
+              {touch
+                ? "Drag your finger across the letters"
+                : "Move your cursor across the letters"}
+            </p>
+          )}
+          {stage === "ready" && (
+            <button
+              type="button"
+              onClick={() => skipRef.current()}
+              className="pointer-events-auto rounded-full border border-gold px-6 py-2.5 font-display text-sm text-gold transition-colors hover:bg-gold hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+            >
+              {touch ? "Tap to enter" : "Click to enter"}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

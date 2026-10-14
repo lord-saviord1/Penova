@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { siteMeta } from "@/lib/content";
 import AsciiIntro from "@/components/ui/AsciiIntro";
+import PageTransition from "@/components/ui/PageTransition";
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -32,8 +33,8 @@ export default function RootLayout({
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body>
         <AsciiIntro />
+        <PageTransition />
         <Navbar />
-        <AsciiIntro />
         <main>{children}</main>
         <Footer />
       </body>

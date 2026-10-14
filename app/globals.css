@@ -25,13 +25,6 @@
     line-height: 1.1;
     letter-spacing: -0.01em;
   }
-    
-@keyframes ascii-intro-failsafe {
-  to { opacity: 0; visibility: hidden; }
-}
-.ascii-intro {
-  animation: ascii-intro-failsafe 0.3s ease 4s forwards;
-}
 
   h1 {
     @apply text-4xl md:text-6xl font-medium;
@@ -57,6 +50,40 @@
   }
 }
 
+/* Depth system: used by Tilt and by section boundaries */
+@layer components {
+  .tilt-card {
+    transform-style: preserve-3d;
+    transition: transform 0.25s ease-out, box-shadow 0.35s ease-out;
+    will-change: transform;
+  }
+
+  .tilt-lift {
+    transform: translateZ(18px);
+  }
+
+  /* A section that sits slightly over the one above it, like a sheet of paper.
+     Needs a solid background and ~2rem of top padding to stay clear of the overlap. */
+  .sheet {
+    position: relative;
+    margin-top: -2rem;
+    border-radius: 2rem 2rem 0 0;
+    box-shadow: 0 -12px 32px -12px rgba(20, 40, 61, 0.18);
+  }
+}
+
+/* ASCII intro failsafe: only applies if JavaScript never starts the intro,
+   so visitors without JS are never stuck behind it. */
+@keyframes ascii-intro-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+.ascii-intro:not([data-js]) {
+  animation: ascii-intro-failsafe 0.3s ease 4s forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -65,5 +92,8 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  .tilt-card {
+    transition: none;
   }
 }

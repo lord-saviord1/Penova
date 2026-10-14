@@ -11,7 +11,8 @@ export default function CTASection({
   cta: { label: string; href: string };
 }) {
   return (
-    <section className="bg-canopy-800 text-canopy-50">
+    // `sheet` (see globals.css) slides this section ~2rem over the one above it.
+    <section className="sheet bg-canopy-800 text-canopy-50">
       <Container className="flex flex-col items-start gap-6 py-16 md:flex-row md:items-center md:justify-between">
         <div className="max-w-xl">
           <h2 className="text-white">{headline}</h2>
