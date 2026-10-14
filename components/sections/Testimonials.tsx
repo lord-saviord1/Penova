@@ -1,18 +1,21 @@
+import Tilt from "@/components/ui/Tilt";
 import { testimonials } from "@/lib/content";
 
 export default function Testimonials() {
   return (
     <div className="grid gap-8 md:grid-cols-3">
       {testimonials.map((t) => (
-        <figure
+        <Tilt
           key={t.name + t.group}
-          className="border-t border-canopy/20 pt-5"
+          className="h-full rounded-lg bg-white p-6 shadow-layer-1 hover:shadow-layer-2"
         >
-          <blockquote className="text-ink/85">&ldquo;{t.quote}&rdquo;</blockquote>
-          <figcaption className="mt-4 text-sm text-ink/60">
-            {t.name} — {t.role}
-          </figcaption>
-        </figure>
+          <figure>
+            <blockquote className="text-ink/85">&ldquo;{t.quote}&rdquo;</blockquote>
+            <figcaption className="mt-4 text-sm text-ink/60">
+              {t.name} — {t.role}
+            </figcaption>
+          </figure>
+        </Tilt>
       ))}
     </div>
   );
