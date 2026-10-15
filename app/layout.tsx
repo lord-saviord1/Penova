@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Source_Serif_4 } from "next/font/google";
+import { Space_Grotesk, Source_Serif_4, Caveat } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -19,6 +19,13 @@ const body = Source_Serif_4({
   variable: "--font-body",
 });
 
+// Handwriting face used only for the decorative doodle phrases.
+const hand = Caveat({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  variable: "--font-hand",
+});
+
 export const metadata: Metadata = {
   title: `${siteMeta.name} — ${siteMeta.tagline}`,
   description: siteMeta.positioning,
@@ -30,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable}`}>
+    <html lang="en" className={`${display.variable} ${body.variable} ${hand.variable}`}>
       <body>
         <AsciiIntro />
         <PageTransition />
