@@ -1,5 +1,6 @@
 import Container from "@/components/ui/Container";
 import SectionHeading from "@/components/ui/SectionHeading";
+import Atmosphere from "@/components/ui/Atmosphere";
 import Hero from "@/components/sections/Hero";
 import PathwayStrip from "@/components/sections/PathwayStrip";
 import EcosystemGrid from "@/components/sections/EcosystemGrid";
@@ -13,7 +14,8 @@ export default function HomePage() {
     <>
       <Hero />
 
-      <section className="sheet bg-paper py-20 md:py-28">
+      <section className="sheet isolate overflow-hidden bg-paper py-20 md:py-28">
+        <Atmosphere doodles="bigIdea" />
         <Container>
           <SectionHeading eyebrow={bigIdea.eyebrow} title={bigIdea.headline} />
           <div className="mt-8 grid gap-10 md:grid-cols-2">
@@ -33,14 +35,15 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="bg-canopy-50/60 py-20 md:py-28">
+      <section className="relative isolate overflow-hidden bg-canopy-50/60 py-20 md:py-28">
+        <Atmosphere doodles="whatIs" />
         <Container>
           <SectionHeading title={whatIsPenova.headline} body={whatIsPenova.intro} />
           <ul className="mt-8 flex flex-wrap gap-2.5">
             {whatIsPenova.cutsAcross.map((item) => (
               <li
                 key={item}
-                className="rounded-sm bg-white px-3 py-1.5 text-sm text-ink/75"
+                className="rounded-sm bg-white px-3 py-1.5 text-sm text-ink/75 shadow-layer-1"
               >
                 {item}
               </li>
@@ -50,7 +53,8 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="py-20 md:py-28">
+      <section className="relative isolate overflow-hidden py-20 md:py-28">
+        <Atmosphere doodles="ecosystem" />
         <Container>
           <SectionHeading
             eyebrow="Our ecosystem"
@@ -65,7 +69,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-20 md:py-28">
+      <section className="relative isolate overflow-hidden py-20 md:py-28">
+        <Atmosphere doodles="impact" />
         <Container>
           <SectionHeading eyebrow="PENOVA in numbers" title="Our impact" />
           <div className="mt-10">
@@ -74,7 +79,8 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="bg-canopy-50/60 py-20 md:py-28">
+      <section className="relative isolate overflow-hidden bg-canopy-50/60 py-20 md:py-28">
+        <Atmosphere doodles="testimonials" />
         <Container>
           <SectionHeading title="What people are saying" />
           <div className="mt-10">
