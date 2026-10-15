@@ -1,6 +1,7 @@
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import DepthBackdrop from "@/components/ui/DepthBackdrop";
+import Atmosphere from "@/components/ui/Atmosphere";
 import { hero } from "@/lib/content";
 
 export default function Hero() {
@@ -9,6 +10,7 @@ export default function Hero() {
     // own gradient background instead of falling behind it.
     <section className="relative isolate overflow-hidden bg-canopy-fade text-canopy-50">
       <DepthBackdrop />
+      <Atmosphere tone="dark" doodles="hero" />
       <Container className="grid gap-10 py-24 md:grid-cols-[1.3fr_1fr] md:py-32">
         <div>
           <h1 className="text-white">{hero.headline}</h1>
