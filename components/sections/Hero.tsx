@@ -2,6 +2,8 @@ import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import DepthBackdrop from "@/components/ui/DepthBackdrop";
 import Atmosphere from "@/components/ui/Atmosphere";
+import HeroStack from "@/components/ui/HeroStack";
+import PlayDoodles from "@/components/ui/PlayDoodles";
 import { hero } from "@/lib/content";
 
 export default function Hero() {
@@ -11,6 +13,7 @@ export default function Hero() {
     <section className="relative isolate overflow-hidden bg-canopy-fade text-canopy-50">
       <DepthBackdrop />
       <Atmosphere tone="dark" doodles="hero" />
+      <PlayDoodles set="hero" tone="dark" />
       <Container className="grid gap-10 py-24 md:grid-cols-[1.3fr_1fr] md:py-32">
         <div>
           <h1 className="text-white">{hero.headline}</h1>
@@ -29,7 +32,8 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="flex items-end">
+        <div className="flex flex-col justify-end gap-8">
+          <HeroStack />
           <p className="max-w-xs border-l border-gold-500/60 pl-5 text-sm text-canopy-100">
             {hero.body}
           </p>
