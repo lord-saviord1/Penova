@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import { siteMeta } from "@/lib/content";
 import AsciiIntro from "@/components/ui/AsciiIntro";
 import PageTransition from "@/components/ui/PageTransition";
+import DepthField from "@/components/ui/DepthField";
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -41,6 +42,7 @@ export default function RootLayout({
       <body>
         <AsciiIntro />
         <PageTransition />
+        <DepthField />
         <Navbar />
         <main>{children}</main>
         <Footer />
