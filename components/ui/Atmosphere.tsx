@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { shapes, type Kind } from "./doodleShapes";
 
 /**
  * Atmosphere = a soft fog layer + hand-drawn doodles for a section background.
@@ -16,22 +17,6 @@ import type { CSSProperties } from "react";
  * screens so phones stay clean. Motion is slow and switches off for
  * prefers-reduced-motion (see globals.css).
  */
-
-type Kind =
-  | "bulb"
-  | "pencil"
-  | "book"
-  | "cap"
-  | "sprout"
-  | "compass"
-  | "stairs"
-  | "spark"
-  | "chat"
-  | "key"
-  | "squiggle"
-  | "arrow"
-  | "loop"
-  | "plus";
 
 type Tone = "line" | "gold" | "accent";
 type Breakpoint = "all" | "md" | "lg";
@@ -62,129 +47,11 @@ export type PresetName =
   | "generalB"
   | "generalC";
 
-// Simple line drawings. Strokes keep a constant width at any size.
-const shapes: Record<Kind, { vb: string; d: string[] }> = {
-  bulb: {
-    vb: "0 0 64 64",
-    d: [
-      "M32 8c-9 0-16 7-16 16 0 6 3 10 7 14 2 2 3 4 3 7h12c0-3 1-5 3-7 4-4 7-8 7-14 0-9-7-16-16-16z",
-      "M26 50h12",
-      "M28 55h8",
-      "M28 38V29l4 4 4-4v9",
-      "M32 2v3",
-      "M8 24H5",
-      "M59 24h-3",
-      "M13 8l2 2",
-      "M51 8l-2 2",
-    ],
-  },
-  pencil: {
-    vb: "0 0 64 64",
-    d: [
-      "M10 54l5-15 31-31a4 4 0 0 1 6 0l4 4a4 4 0 0 1 0 6L25 49z",
-      "M15 39l10 10",
-      "M42 12l10 10",
-    ],
-  },
-  book: {
-    vb: "0 0 64 64",
-    d: [
-      "M32 14c-5-4-14-5-22-4v36c8-1 17 0 22 4 5-4 14-5 22-4V10c-8-1-17 0-22 4z",
-      "M32 14v36",
-      "M16 20c4 0 7 1 10 2",
-      "M16 28c4 0 7 1 10 2",
-      "M38 22c3-1 6-2 10-2",
-      "M38 30c3-1 6-2 10-2",
-    ],
-  },
-  cap: {
-    vb: "0 0 64 64",
-    d: [
-      "M32 14L4 28l28 14 28-14z",
-      "M16 35v10c0 4 7 8 16 8s16-4 16-8V35",
-      "M60 28v16",
-    ],
-  },
-  sprout: {
-    vb: "0 0 64 64",
-    d: [
-      "M32 56V30",
-      "M32 36c0-10-8-16-20-16 0 10 8 16 20 16z",
-      "M32 30c0-9 7-15 18-15 0 9-7 15-18 15z",
-      "M22 56h20",
-    ],
-  },
-  compass: {
-    vb: "0 0 64 64",
-    d: [
-      "M32 6a26 26 0 1 0 0 52 26 26 0 0 0 0-52z",
-      "M42 22L36 36 22 42 28 28z",
-      "M32 8v4",
-      "M32 52v4",
-      "M8 32h4",
-      "M52 32h4",
-    ],
-  },
-  stairs: {
-    vb: "0 0 64 64",
-    d: [
-      "M6 56h14V44h14V32h14V20h10",
-      "M12 30c8-8 18-14 32-15",
-      "M44 15l-9-4",
-      "M44 15l-4 9",
-    ],
-  },
-  spark: {
-    vb: "0 0 64 64",
-    d: [
-      "M32 6v14",
-      "M32 44v14",
-      "M6 32h14",
-      "M44 32h14",
-      "M14 14l9 9",
-      "M41 41l9 9",
-      "M50 14l-9 9",
-      "M23 41l-9 9",
-    ],
-  },
-  chat: {
-    vb: "0 0 64 64",
-    d: [
-      "M8 10h30a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H22l-8 7v-7H8a4 4 0 0 1-4-4V14a4 4 0 0 1 4-4z",
-      "M46 24h10a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4h-2v7l-8-7H34a4 4 0 0 1-4-4v-2",
-    ],
-  },
-  key: {
-    vb: "0 0 64 64",
-    d: [
-      "M22 20a10 10 0 1 0 0 20 10 10 0 0 0 0-20z",
-      "M32 30h26",
-      "M50 30v8",
-      "M42 30v6",
-      "M18 30h.01",
-    ],
-  },
-  squiggle: {
-    vb: "0 0 64 20",
-    d: ["M3 10c6-8 10 8 16 0s10 8 16 0 10 8 16 0"],
-  },
-  arrow: {
-    vb: "0 0 64 48",
-    d: ["M4 40C16 14 36 8 56 16", "M56 16l-11-1", "M56 16l-5 10"],
-  },
-  loop: {
-    vb: "0 0 64 64",
-    d: ["M32 8c15 0 25 11 24 25S45 56 30 55 7 44 8 31 20 10 36 9"],
-  },
-  plus: {
-    vb: "0 0 64 64",
-    d: ["M32 12v40", "M12 32h40"],
-  },
-};
-
 const presets: Record<PresetName, Item[]> = {
   hero: [
-    { kind: "bulb", from: "right", x: "30%", y: "56px", size: 64, rot: 10, tone: "gold", float: true },
+    { kind: "bulb", from: "right", x: "30%", y: "56px", size: 64, rot: 10, tone: "gold", float: true, bp: "md" },
+    { kind: "bulb", from: "right", x: "6%", y: "18px", size: 40, rot: 10, tone: "gold", bp: "all" },
+    { text: "learn · build · grow", x: "5%", y: "16px", anchor: "bottom", size: 24, rot: -2, tone: "line", bp: "all" },
     { text: "from potential to impact", from: "right", x: "6%", y: "34px", size: 30, rot: -5, tone: "line" },
     { kind: "spark", from: "right", x: "4%", y: "46%", size: 40, tone: "gold", float: true },
     { kind: "compass", x: "47%", y: "26px", size: 52, rot: -12, tone: "line", bp: "lg" },
@@ -194,7 +61,7 @@ const presets: Record<PresetName, Item[]> = {
     { kind: "sprout", x: "2%", y: "20px", size: 44, rot: -6, tone: "line", bp: "all" },
     { kind: "book", from: "right", x: "3%", y: "28px", size: 70, rot: 8, tone: "line", float: true },
     { text: "potential is everywhere", from: "right", x: "14%", y: "96px", size: 28, rot: -4, tone: "accent", bp: "lg" },
-    { text: "learn · build · connect", x: "3%", y: "26px", anchor: "bottom", size: 30, rot: -2, tone: "line", bp: "md" },
+    { text: "learn · build · connect", x: "3%", y: "26px", anchor: "bottom", size: 26, rot: -2, tone: "line", bp: "all" },
     { kind: "key", from: "right", x: "5%", y: "30px", anchor: "bottom", size: 56, rot: -14, tone: "gold", float: true, bp: "md" },
     { text: "access matters", from: "right", x: "15%", y: "44px", anchor: "bottom", size: 26, rot: 3, tone: "accent", bp: "lg" },
     { kind: "spark", from: "right", x: "6%", y: "18px", anchor: "bottom", size: 34, tone: "gold", bp: "all" },
@@ -204,7 +71,7 @@ const presets: Record<PresetName, Item[]> = {
     { kind: "cap", from: "right", x: "4%", y: "30px", size: 66, rot: 12, tone: "line", float: true, bp: "md" },
     { text: "ask questions", from: "right", x: "15%", y: "100px", size: 28, rot: -5, tone: "accent", bp: "lg" },
     { kind: "pencil", x: "3%", y: "24px", anchor: "bottom", size: 60, rot: -20, tone: "line", bp: "md" },
-    { text: "find your people", x: "12%", y: "34px", anchor: "bottom", size: 30, rot: -3, tone: "gold", bp: "lg" },
+    { text: "find your people", x: "12%", y: "34px", anchor: "bottom", size: 26, rot: -3, tone: "gold", bp: "all" },
     { kind: "chat", from: "right", x: "6%", y: "26px", anchor: "bottom", size: 54, rot: 6, tone: "line", bp: "md" },
   ],
   ecosystem: [
@@ -212,7 +79,7 @@ const presets: Record<PresetName, Item[]> = {
     { text: "one ecosystem, many paths", from: "right", x: "16%", y: "150px", size: 30, rot: -4, tone: "accent", bp: "lg" },
     { kind: "spark", from: "right", x: "2%", y: "150px", size: 38, tone: "gold", bp: "lg" },
     { kind: "stairs", x: "3%", y: "28px", anchor: "bottom", size: 84, tone: "line", bp: "md" },
-    { text: "keep growing", x: "16%", y: "40px", anchor: "bottom", size: 30, rot: -3, tone: "accent", bp: "lg" },
+    { text: "keep growing", x: "16%", y: "40px", anchor: "bottom", size: 26, rot: -3, tone: "accent", bp: "all" },
     { kind: "sprout", from: "right", x: "6%", y: "20px", anchor: "bottom", size: 48, rot: 8, tone: "gold", bp: "all" },
   ],
   impact: [
@@ -228,7 +95,7 @@ const presets: Record<PresetName, Item[]> = {
     { kind: "chat", from: "right", x: "6%", y: "34px", size: 68, rot: -6, tone: "line", float: true, bp: "md" },
     { text: "real people, real stories", from: "right", x: "15%", y: "108px", size: 28, rot: -4, tone: "accent", bp: "lg" },
     { kind: "squiggle", x: "4%", y: "30px", anchor: "bottom", size: 100, tone: "gold", bp: "md" },
-    { text: "your story could be next", x: "14%", y: "28px", anchor: "bottom", size: 28, rot: -2, tone: "accent", bp: "lg" },
+    { text: "your story could be next", x: "14%", y: "28px", anchor: "bottom", size: 26, rot: -2, tone: "accent", bp: "all" },
   ],
   cta: [
     { kind: "spark", x: "3%", y: "14px", size: 34, tone: "gold", bp: "all" },
@@ -284,6 +151,11 @@ const fogColors = {
     "rgba(232,163,61,0.08)",
   ],
 };
+
+// Bigger doodles read as nearer, so they travel further as you scroll.
+function shiftFor(item: Item): number {
+  return Math.min(Math.max(Math.round((item.size ?? 40) * 0.55), 18), 56);
+}
 
 function placement(item: Item): CSSProperties {
   const style: CSSProperties = {
@@ -347,6 +219,10 @@ export default function Atmosphere({
                 style={placement(item)}
               >
                 <div
+                  className="doodle-parallax"
+                  style={{ "--shift": shiftFor(item) } as CSSProperties}
+                >
+                <div
                   className={item.float ? "doodle-float" : undefined}
                   style={item.float ? { animationDelay: `${(i * 1.3) % 6}s` } : undefined}
                 >
@@ -373,6 +249,7 @@ export default function Atmosphere({
                       {item.text}
                     </span>
                   )}
+                </div>
                 </div>
               </div>
             );
